@@ -35,7 +35,7 @@ const renderHandler = async (item, currentWindow, e) => {
         const video = document.getElementById("video-main");
         const screens = await ipc.invoke("ipc-get", "screens");
         console.log("screens", screens);
-        let stream = await getDesktopStream(screens[screens.length - 1].id);
+        let stream = await getDesktopStream(screens[0].id);
 
         video.srcObject = stream;
         console.log(stream);

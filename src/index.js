@@ -4,7 +4,7 @@ import { changePalette } from "./theme";
 import { SnackbarProvider } from "notistack";
 import { ThemeProvider } from "@material-ui/core/styles";
 
-import "./index.css";
+import "./index.scss";
 import App from "./App";
 
 const Root = () => {
@@ -21,7 +21,7 @@ const Root = () => {
         maxSnack={3}
         anchorOrigin={{
           vertical: "bottom",
-          horizontal: "right",
+          horizontal: "center",
         }}
       >
         <App setPalette={setPaletteType} />
