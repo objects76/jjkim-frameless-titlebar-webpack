@@ -9,8 +9,16 @@ const shortcut = require("electron-localshortcut");
 
 const path = require("path");
 const url = require("url");
+const {
+  initLog,
+  loadWindowSettings,
+  saveWindowSettings,
+} = require("./main-settings");
 
 //const { notifyMe } = require("./notification");
+
+// settings
+initLog();
 
 let mainWindow;
 
@@ -43,14 +51,15 @@ function createWindow() {
   console.log("url:", startUrl);
   mainWindow.loadURL(startUrl);
 
-  //   settings.loadWindowSettings(mainWindow, "main");
+  loadWindowSettings(mainWindow, "main");
+  mainWindow.once("ready-to-show", () => mainWindow.show());
+
   mainWindow.on("close", () => {
-    // settings.saveWindowSettings(mainWindow, "main");
+    saveWindowSettings(mainWindow, "main");
   });
   mainWindow.on("closed", () => {
     mainWindow = null;
   });
-  mainWindow.once("ready-to-show", () => mainWindow.show());
 
   mainWindow.setMenu(null);
   shortcut.register(mainWindow, "F11", () => {

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 const { fullscreenScreenshot, getDesktopStream } = require("./screenshot");
 const ipc = window.ipcRenderer;
+const { settings } = require("./renderer-settings");
 
 const enqueue = (queueSnack) => (item, currentWindow, e) => {
   var label = `Item Clicked: ${item.label}!`;
@@ -55,6 +56,15 @@ const renderHandler = async (item, currentWindow, e) => {
         item.label = "Start Desktop Stream";
       }
       break;
+    case "New Window":
+      console.log(
+        `\t Process Type: ${process.type}, pid=${process.pid}
+    \t\t argv=${process.argv}
+    \t Version: chrome=${process.versions.chrome}, electron=${process.versions.electron}
+    `
+      );
+      console.log("settings:", settings.file());
+      break;
     default:
       console.log(item.label);
       break;
@@ -68,11 +78,11 @@ const createMenu = (queueSnack) => {
       submenu: [
         {
           label: "New Window",
-          click,
+          click: renderHandler,
         },
         {
           label: "Preferences",
-          click,
+          click: renderHandler,
         },
         {
           type: "separator",

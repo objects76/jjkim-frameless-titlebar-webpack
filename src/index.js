@@ -6,6 +6,9 @@ import { ThemeProvider } from "@material-ui/core/styles";
 
 import "./index.scss";
 import App from "./App";
+import { initLog } from "./renderer-settings";
+
+initLog();
 
 const Root = () => {
   const [paletteType, setPaletteType] = useState("dark");
