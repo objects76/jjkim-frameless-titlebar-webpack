@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 const { fullscreenScreenshot, getDesktopStream } = require("./screenshot");
 const ipc = window.ipcRenderer;
-const { settings } = require("./renderer-settings");
+const { settings } = require("main-settings");
 
 const enqueue = (queueSnack) => (item, currentWindow, e) => {
   var label = `Item Clicked: ${item.label}!`;

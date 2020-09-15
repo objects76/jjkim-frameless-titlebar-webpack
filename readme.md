@@ -28,13 +28,14 @@
 # packages from frameless-titlebar
 
 ```bash
+    # for electron
+    yarn add -D electron electron-builder
+    yarn add electron-localshortcut electron-updater is-electron electron-settings electron-log
+
     yarn add @material-ui/core @material-ui/icons
-    yarn add electron-localshortcut electron-updater is-electron
     yarn add frameless-titlebar notistack
     yarn add react react-dom
 
-    # for build
-    yarn add -D electron electron-builder
     # for script
     yarn add -D cross-env wait-on
   },

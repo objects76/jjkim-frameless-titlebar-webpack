@@ -120,6 +120,17 @@ module.exports = {
   ],
 
   //-------------------------------------------------------------
+  // abs include path:
+  //  - https://engineering.huiseoul.com/리액트-상대경로-절대경로-변경-1485babb5198
+  resolve: {
+    modules: [
+      path.join(__dirname, "src"),
+      path.join(__dirname, "elec"),
+      "node_modules",
+    ],
+  },
+
+  //-------------------------------------------------------------
   // webpack-dev-server config.
   devServer: {
     contentBase: __dirname + `/${OUTPUT}/`,

@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
-import { changePalette } from "./theme";
+import { changePalette } from "theme";
 import { SnackbarProvider } from "notistack";
 import { ThemeProvider } from "@material-ui/core/styles";
 
-import "./index.scss";
-import App from "./App";
-import { initLog } from "./renderer-settings";
+import "index.scss";
+import App from "App";
+import { initLog } from "main-settings";
 
 initLog();
 

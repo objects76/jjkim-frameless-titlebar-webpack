@@ -1,6 +1,9 @@
+function isMain() {
+  return typeof window === "undefined";
+}
+
 function safe_require(pkg) {
-  if (typeof window === "undefined") return require(pkg); // main process
-  return window.require(pkg); // renderer process
+  return isMain() ? require(pkg) : window.require(pkg);
 }
 
 function initLog() {
@@ -32,7 +35,7 @@ function initLog() {
     "[{h}:{i}:{s}.{ms}] [{processType}.{level}] {text}";
   log.info("---------------------------------------------------");
 
-  if (typeof window === "undefined") {
+  if (isMain()) {
     log.info(
       `\t Pid=${process.pid}
 \t argv=${process.argv}
