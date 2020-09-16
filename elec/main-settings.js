@@ -1,5 +1,9 @@
 function isMain() {
-  return typeof window === "undefined";
+  return process.type === "browser";
+}
+
+function isElectron() {
+  return process.type === "browser" || process.type === "renderer";
 }
 
 function safe_require(pkg) {
@@ -37,7 +41,7 @@ function initLog() {
 
   if (isMain()) {
     log.info(
-      `\t Pid=${process.pid}
+      `\t AppVer=${process.env.VERSION}, Pid=${process.pid}
 \t argv=${process.argv}
 \t Version: os=${process.getSystemVersion()} ${process.arch}, chrome=${
         process.versions.chrome
@@ -45,7 +49,9 @@ function initLog() {
 `
     );
   } else {
-    log.info(`\tPid=${remote.getCurrentWindow().webContents.getOSProcessId()}`);
+    log.info(
+      `\t Pid=${remote.getCurrentWindow().webContents.getOSProcessId()}`
+    );
   }
 
   // replace console.
