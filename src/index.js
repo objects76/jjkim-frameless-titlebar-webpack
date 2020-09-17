@@ -6,7 +6,7 @@ import { ThemeProvider } from "@material-ui/core/styles";
 
 import "index.scss";
 import App from "App";
-import { initLog } from "main-settings";
+import { initLog } from "../elec/main-settings";
 
 initLog();
 

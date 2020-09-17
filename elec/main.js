@@ -6,7 +6,7 @@ const {
   desktopCapturer,
 } = require("electron");
 const shortcut = require("electron-localshortcut");
-
+const fs = require("fs");
 const path = require("path");
 const url = require("url");
 const {
@@ -17,13 +17,10 @@ const {
 
 const { collectLogFiles } = require("./debug-util");
 
-const { name: appname, version } = require("../package.json");
-
 //const { notifyMe } = require("./notification");
 
 // settings
 initLog();
-console.log(`\tApp=${appname}(v${version})`);
 
 let mainWindow;
 
@@ -44,15 +41,23 @@ function createWindow() {
     },
     titleBarStyle: "hidden",
   });
+  const get_html = () => {
+    const index_html = [
+      path.join(__dirname, "../index.html"), // from dist/main/main.js
+      path.join(__dirname, "../dist/index.html"), // from elec/main.js
+    ];
+    for (const pathname of index_html) {
+      if (fs.existsSync(pathname))
+        return url.format({
+          pathname,
+          protocol: "file:",
+          slashes: true,
+        });
+    }
+    return null;
+  };
 
-  const startUrl =
-    process.env.ELECTRON_START_URL ||
-    url.format({
-      pathname: path.join(__dirname, "../dist/index.html"),
-      protocol: "file:",
-      slashes: true,
-    });
-
+  const startUrl = process.env.ELECTRON_START_URL || get_html();
   console.log("url:", startUrl);
   mainWindow.loadURL(startUrl);
 
@@ -73,7 +78,7 @@ function createWindow() {
   });
 
   shortcut.register(mainWindow, "F12", () => {
-    mainWindow.webContents.openDevTools();
+    mainWindow.webContents.openDevTools({ mode: "detach" });
   });
   shortcut.register(mainWindow, "F5", () => {
     app.relaunch();

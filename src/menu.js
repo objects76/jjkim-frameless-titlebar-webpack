@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 const { fullscreenScreenshot, getDesktopStream } = require("./screenshot");
 const ipc = window.ipcRenderer;
-const { settings } = require("main-settings");
+const { settings } = require("../elec/main-settings");
 
 const enqueue = (queueSnack) => (item, currentWindow, e) => {
   var label = `Item Clicked: ${item.label}!`;
@@ -17,7 +17,7 @@ const enqueue = (queueSnack) => (item, currentWindow, e) => {
 };
 
 const mainHandler = (item, currentWindow, e) => {
-  console.log("render:", item);
+  //console.log("render:", item);
   ipc.send("ipc-menu", item.label, item.type === "checkbox" && item.checked);
 };
 

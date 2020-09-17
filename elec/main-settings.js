@@ -1,48 +1,53 @@
+const path = require("path");
+const fs = require("fs");
+const log = require("electron-log");
+const settings = require("electron-settings");
+
+settings.configure({
+  numSpaces: 4,
+  prettify: true,
+});
+
 function isMain() {
   return process.type === "browser";
 }
 
-function isElectron() {
-  return process.type === "browser" || process.type === "renderer";
-}
-
-function safe_require(pkg) {
-  return isMain() ? require(pkg) : window.require(pkg);
-}
-
+const MAX_LOG_SIZE = 1024 * 1024 * 2;
 function initLog() {
-  const path = safe_require("path");
-  const fs = safe_require("fs");
-  const log = safe_require("electron-log");
-
-  // log.transports.file.maxSize = 1024; console.warn('*** log archive test:1KB, default: 1MB ***');
-  log.transports.file.archiveLog = (file) => {
-    file = file.toString();
-    const info = path.parse(file);
-    const MAX_BACKUP = 10;
+  // rotate log only in initLog().
+  log.transports.file.maxSize = 0;
+  const logfile = log.transports.file.getFile();
+  if (logfile.size > MAX_LOG_SIZE) {
+    var oldPath = logfile.toString();
+    var inf = path.parse(oldPath);
     try {
-      // xxx-1.log, ... xxx-9.log ==> xxx-2.log, ... xxx-10.log
-      for (let i = MAX_BACKUP; i >= 2; --i) {
-        const older = path.join(info.dir, info.name + `-${i}` + info.ext);
-        const newer = path.join(info.dir, info.name + `-${i - 1}` + info.ext);
-        if (fs.existsSync(newer)) fs.renameSync(newer, older);
-      }
-      // xxx.log ==> xxx-1.log
-      fs.renameSync(file, path.join(info.dir, info.name + "-1" + info.ext));
-      console.log(`${process.type}:old logs are archived!!!`);
+      fs.renameSync(oldPath, path.join(inf.dir, inf.name + ".old" + inf.ext));
+      logfile.reset();
     } catch (e) {
-      console.warn(`${process.type}: Could not rotate log:`, e);
+      console.warn("Could not rotate log", e);
     }
-  };
+  }
 
   log.transports.file.format = log.transports.console.format =
     "[{h}:{i}:{s}.{ms}] [{processType}.{level}] {text}";
+  log.info("");
+  log.info("");
+  log.info("");
   log.info("---------------------------------------------------");
 
-  if (process.env.APPNAME) log.info(`\t AppName=${process.env.APPNAME}`);
-  if (process.env.VERSION) log.info(`\t AppVer=${process.env.VERSION}`);
+  if (process.env.APPNAME)
+    log.info(`\t App=${process.env.APPNAME} (v${process.env.VERSION})`);
 
   if (isMain()) {
+    const { app } = require("electron");
+    app.once("browser-window-focus", (event, win) => {
+      log.info(
+        `mainWindow id=${
+          win.webContents.id
+        }, pid=${win.webContents.getOSProcessId()}`
+      );
+    });
+
     log.info(
       `\t Pid=${process.pid}\n\t ${process.argv}\n\t ${process.platform}.${
         process.arch
@@ -53,7 +58,7 @@ function initLog() {
     );
   } else {
     log.info(
-      `\t Pid=${remote.getCurrentWindow().webContents.getOSProcessId()}`
+      `\t Pid=${window.remote.getCurrentWindow().webContents.getOSProcessId()}`
     );
   }
 
@@ -62,20 +67,10 @@ function initLog() {
   Object.assign(console, log.functions);
 }
 
-let settings;
-if (settings === undefined) {
-  settings = safe_require("electron-settings");
-
-  settings.configure({
-    numSpaces: 4,
-    prettify: true,
-  });
-}
-
 // windows settings
 function loadWindowSettings(mainWindow, winName) {
   if (settings.getSync(winName + "-devtool"))
-    mainWindow.webContents.openDevTools();
+    mainWindow.webContents.openDevTools({ mode: "detach" });
   mainWindow.setBounds(settings.getSync(winName + "-bounds"));
 
   if (settings.getSync(winName + "-fullscreen")) mainWindow.setFullScreen(true);
