@@ -39,11 +39,14 @@ function initLog() {
     "[{h}:{i}:{s}.{ms}] [{processType}.{level}] {text}";
   log.info("---------------------------------------------------");
 
+  if (process.env.APPNAME) log.info(`\t AppName=${process.env.APPNAME}`);
+  if (process.env.VERSION) log.info(`\t AppVer=${process.env.VERSION}`);
+
   if (isMain()) {
     log.info(
-      `\t AppVer=${process.env.VERSION}, Pid=${process.pid}
-\t argv=${process.argv}
-\t Version: os=${process.getSystemVersion()} ${process.arch}, chrome=${
+      `\t Pid=${process.pid}\n\t ${process.argv}\n\t ${process.platform}.${
+        process.arch
+      }-${process.getSystemVersion()}, chrome=${
         process.versions.chrome
       }, electron=${process.versions.electron}
 `

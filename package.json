@@ -7,7 +7,7 @@
     "start": "webpack-dev-server --port 4500",
     "build": "webpack --mode=production",
     "dev": "wait-on http://localhost:4500 && cross-env ELECTRON_START_URL=http://localhost:4500/ electron .",
-    "pkgs": "npx electron-builder --win --dir",
+    "pkgs": "npx electron-builder --win --dir && ./pkgs/win-unpacked/frameless-titlebar-usage.exe",
     "prepkgs": "yarn build",
     "asar-unpack": "npx asar extract pkgs/win-unpacked/resources/app.asar pkgs/asar-unpack/"
   },
@@ -41,6 +41,7 @@
   "dependencies": {
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
+    "archiver": "^5.0.2",
     "electron-localshortcut": "^3.2.1",
     "electron-log": "^4.2.4",
     "electron-settings": "^4.0.2",

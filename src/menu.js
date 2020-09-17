@@ -192,8 +192,8 @@ const createMenu = (queueSnack) => {
           click: renderHandler,
         },
         {
-          label: "Menu Item #1",
-          click: renderHandler,
+          label: "Get Debug Logs",
+          click: mainHandler,
         },
       ],
     },

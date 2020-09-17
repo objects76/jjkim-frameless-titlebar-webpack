@@ -15,10 +15,15 @@ const {
   saveWindowSettings,
 } = require("./main-settings");
 
+const { collectLogFiles } = require("./debug-util");
+
+const { name: appname, version } = require("../package.json");
+
 //const { notifyMe } = require("./notification");
 
 // settings
 initLog();
+console.log(`\tApp=${appname}(v${version})`);
 
 let mainWindow;
 
@@ -111,6 +116,9 @@ ipcMain.on("ipc-menu", (event, label, checked) => {
       win.setFullScreen(!win.isFullScreen());
       break;
     }
+    case "Get Debug Logs":
+      collectLogFiles(mainWindow);
+      break;
     default:
       console.log(`Item Clicked: ${label}, checked=${checked}`);
       break;
